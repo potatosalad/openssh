@@ -1,4 +1,4 @@
-/* $OpenBSD: ssh.c,v 1.338 2010/05/16 12:55:51 markus Exp $ */
+/* $OpenBSD: ssh.c,v 1.340 2010/06/25 23:15:36 djm Exp $ */
 /*
  * Author: Tatu Ylonen <ylo@cs.hut.fi>
  * Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
@@ -829,6 +829,13 @@ main(int ac, char **av)
 	ssh_login(&sensitive_data, host, (struct sockaddr *)&hostaddr,
 	    pw, timeout_ms);
 
+	if (packet_connection_is_on_socket()) {
+		verbose("Authenticated to %s ([%s]:%d).", host,
+		    get_remote_ipaddr(), get_remote_port());
+	} else {
+		verbose("Authenticated to %s (via proxy).", host);
+	}
+
 	/* We no longer need the private host keys.  Clear them now. */
 	if (sensitive_data.nkeys != 0) {
 		for (i = 0; i < sensitive_data.nkeys; i++) {
@@ -1096,7 +1103,9 @@ ssh_session(void)
 		char *proto, *data;
 		/* Get reasonable local authentication information. */
 		client_x11_get_proto(display, options.xauth_location,
-		    options.forward_x11_trusted, &proto, &data);
+		    options.forward_x11_trusted, 
+		    options.forward_x11_timeout,
+		    &proto, &data);
 		/* Request forwarding with authentication spoofing. */
 		debug("Requesting X11 forwarding with authentication "
 		    "spoofing.");
@@ -1192,7 +1201,8 @@ ssh_session2_setup(int id, int success, void *arg)
 		char *proto, *data;
 		/* Get reasonable local authentication information. */
 		client_x11_get_proto(display, options.xauth_location,
-		    options.forward_x11_trusted, &proto, &data);
+		    options.forward_x11_trusted,
+		    options.forward_x11_timeout, &proto, &data);
 		/* Request forwarding with authentication spoofing. */
 		debug("Requesting X11 forwarding with authentication "
 		    "spoofing.");
