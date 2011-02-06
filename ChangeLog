@@ -1,3 +1,7 @@
+20110206
+ - (dtucker) [openbsd-compat/port-linux.c] Bug #1851: fix syntax error in
+   selinux code.  Patch from Leonardo Chiquitto 
+
 20110204
  - OpenBSD CVS Sync
    - djm@cvs.openbsd.org 2011/01/31 21:42:15
@@ -9,6 +13,9 @@
    - djm@cvs.openbsd.org 2011/02/04 00:44:43
      [version.h]
      openssh-5.8
+ - (djm) [README contrib/caldera/openssh.spec contrib/redhat/openssh.spec]
+   [contrib/suse/openssh.spec] update versions in docs and spec files.
+ - Release OpenSSH 5.8p1
 
 20110128
  - (djm) [openbsd-compat/port-linux.c] Check whether SELinux is enabled
